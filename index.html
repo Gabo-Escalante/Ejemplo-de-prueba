@@ -1,0 +1,51 @@
+!DOCTYPE html
+html
+head
+    titleESP32 Control Paneltitle
+    meta name=viewport content=width=device-width, initial-scale=1
+    style
+        body { font-family Arial, sans-serif; text-align center; margin-top 50px; }
+        h1 { color #333; }
+        button { padding 15px 30px; font-size 20px; margin 10px; cursor pointer; }
+        .on { background-color #4CAF50; color white; border none; }
+        .off { background-color #f44336; color white; border none; }
+        #potValue { font-size 24px; color #333; margin-top 20px; }
+        .gauge-container { position relative; width 300px; height 300px; margin 20px auto; }
+        .gauge { position absolute; width 100%; height 100%; }
+        .needle { position absolute; width 50%; height 50%; transform-origin right center; }
+    style
+head
+body
+    h1ESP32 Control Panelh1
+    pClick to control the LEDp
+    pbutton class=on onclick=controlLED('on')Turn Onbuttonp
+    pbutton class=off onclick=controlLED('off')Turn Offbuttonp
+    h2Potentiometer Valueh2
+    p id=potValueNAp
+    h2Speedometerh2
+    div class=gauge-container
+        img id=speedometer src=Velocimetro.jpg class=gauge 
+        img id=needle src=Aguja.jpg class=needle 
+    div
+    script
+        const esp32Ip = 'httpyour-esp32-ip';   Replace with your ESP32 IP address
+
+        function controlLED(state) {
+            fetch(`${esp32Ip}led${state}`).then(response = {
+                if (response.ok) {
+                    console.log(`LED is ${state}`);
+                }
+            });
+        }
+
+        setInterval(function() {
+            fetch(`${esp32Ip}potValue`).then(response = response.text()).then(data = {
+                document.getElementById(potValue).innerText = data;
+                 Update needle angle based on potentiometer value
+                let angle = (data  4095)  180;  Assuming 12-bit ADC, adjust as needed
+                document.getElementById(needle).style.transform = `rotate(${angle}deg)`;
+            });
+        }, 1000);
+    script
+body
+html
